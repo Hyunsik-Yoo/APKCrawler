@@ -12,7 +12,7 @@ Google Play Store Crawler는 Python3 버전으로 구현되었으면, APK Downlo
 # Installation
 Docker Image로 설치하는 방법과, 직접설치하는 방법 두가지가 존재합니다.
 ## Docker
-> Docker Hub 바로가기 : [Docker Hub 바로가기](docker push dbgustlr92/apkcrawler)
+> [Docker Hub 바로가기](https://hub.docker.com/r/dbgustlr92/apkcrawler/)
 > <pre><code> docker pull dbgustlr92/apkcrawler </code></pre>
 
 ## 직접설치
