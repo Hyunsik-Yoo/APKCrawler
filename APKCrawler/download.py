@@ -18,6 +18,9 @@ import logging.config
 import subprocess
 
 def download_apk(package_name, apk_directory):
+    """
+        패키지 이름을 인자로 받아서 해당 APK파일을 정해진 디렉토리에 저장
+    """
     file_name = package_name + ".apk"
     try:
         # Connect
@@ -52,30 +55,29 @@ def get_not_downloaded_app_list(apk_directory, db_directory):
         # 다운받지 않거나 업데이트된 앱리스트를 받아옵니다.
         cursor.execute("select package from list where isDownloaded is null")
         package_list = cursor.fetchall()
-        
+
         for package in package_list:
             package = package[0]
             try:
+                # 다운로드중 에러발생할 경우가 있음
                 if download_apk(package, apk_directory):
                     logger.info(package + ' finish download')
+
+                    # 다운로드가 완료되면 DB에 isDownloaded = 1로 설정
                     cursor.execute("update list set isDownloaded=1 where package==(?)" \
                         ,(package,))
-                
+                    # DB저장
                     connection.commit()
 
-            #except IOError as e:
-            #    logger.error('no space?')
-            #    connection.commit()
-            #    connection.close()
-            #    raise e
             except Exception as e:
-                print(e)
                 logger.error(package + ' was not downloaded')
+
+                # 다운로드에 실패하였으므로 isDownloaded필드를 None으로 설정
                 cursor.execute("update list set isDownloaded = ? where package== ?"\
                     ,(None,package))
                 connection.commit()
                 continue
-        
+
     except Exception as e:
         connection.commit()
         connection.close()
@@ -84,7 +86,7 @@ def get_not_downloaded_app_list(apk_directory, db_directory):
 
 
 if __name__ == '__main__':
-    
+
     # 로깅모듈 설정파일 읽기
     logging.config.fileConfig('logging.conf')
     logger = logging.getLogger('apk_crawler')
@@ -96,6 +98,13 @@ if __name__ == '__main__':
     # 설정파일에서 경로 변수 읽기
     APK_DIRECTORY = config.get('Setting', 'APK_DIRECTORY')
     DB_DIRECTORY = config.get('Setting', 'DB_DIRECTORY')
+
+    # apk파일들이 저장될 디렉토리를 생성한다.
+    # 이미 존재하는 디렉토리라면 생략(pass)
+    try:
+        os.makedirs(APK_DIRECTORY)
+    except Exception as e:
+        pass
 
     # DB에서 업데이트되거나 아직 다운받지 않은 APK들을 다운받습니다.
     get_not_downloaded_app_list(APK_DIRECTORY, DB_DIRECTORY)
