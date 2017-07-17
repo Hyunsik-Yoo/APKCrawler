@@ -34,6 +34,7 @@ def get_new_app_list(popular_url, chrome_driver_directory):
         app_detail = div_app.find_element_by_class_name('details')
         url = app_detail.find_element_by_class_name('title').get_attribute('href')
         package_name = url.split('id=')[1]
+        print(package_name + ' was searched in google play store')
         package_list.append(package_name)
 
     chrome_driver.close()
