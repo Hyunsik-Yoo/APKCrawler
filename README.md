@@ -10,11 +10,6 @@ Google Play Store Crawler는 Python3 버전으로 구현되었으면, APK Downlo
 (APK Downloader 에서는 Google Play Unofficial Python API를 사용하는데 해당 라이브러리가 Python3버전을 지원하지 않기 때문에 2버전으로 구현하였습니다.)
 
 # Installation
-Docker Image로 설치하는 방법과, 직접설치하는 방법 두가지가 존재합니다.
-## Docker
-> [Docker Hub 바로가기](https://hub.docker.com/r/dbgustlr92/apkcrawler/)
-> <pre><code> docker pull dbgustlr92/apkcrawler </code></pre>
-
 ## 직접설치
 > 하단의 Google Play Unofficial Python API 설치
 > 하단의 필요한 python 라이브러리 설치
