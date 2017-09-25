@@ -1,4 +1,3 @@
-#-*- coding: utf-8 -*-
 import sqlite3
 import datetime
 import sys
@@ -40,10 +39,11 @@ class DBController:
         try:
             self.cursor.execute('CREATE TABLE list(appName, package, imgSrc, updateDate, isDownloaded, category)')
         except sqlite3.OperationalError as e: # 테이블이 존재한다면 여기로 들어옴
-            pass
+            print(e)
+            return True
         except Exception as e:
             print("create table중 알 수 없는 오류 발생")
-            raise e
+            return False
 
     def get_old_category_app_list(self,category):
         """
@@ -52,8 +52,8 @@ class DBController:
         try:
             self.cursor.execute('SELECT package FROM list WHERE category==(?)',(category[0],))
             package_list = []
-            total_data = list(self.cursor)
-            package_list = [tuple[0] for tuple in total_data]
+            total_data = self.cursor.fetchall()
+            package_list = [row[0] for row in total_data]
         except Exception as e:
             raise e
         return package_list
@@ -65,7 +65,7 @@ class DBController:
         try:
             self.cursor.execute('SELECT * FROM list')
             total_data = self.cursor.fetchall()
-            app_name_list = [tuple[0] for tuple in total_data]
+            app_name_list = [row[0] for row in total_data]
             return app_name_list
         except Exception as e:
             self.connection.close()
@@ -77,8 +77,10 @@ class DBController:
             isDownloaded필드를 변경
         """
         try:
-            self.cursor.execute("update list set updateDate=? where appName=?",(app[3], app[0]))
-            self.cursor.execute("update list set isDownloaded=? where appName=?",(None,app[0]))
+            self.cursor.execute("update list set updateDate=? where appName=?",\
+                (app.update_date, app.name))
+            self.cursor.execute("update list set isDownloaded=? where appName=?",\
+                (None, app.name))
             self.connection.commit()
         except Exception as e:
             print('update_date error')
@@ -87,38 +89,46 @@ class DBController:
 
     def update_app(self, update_app_list, category):
         """
-            최신버전으로 갱신된 앱 메타정보리스트를 입력으로 받음
-            해당 정보들을 DB에 갱신시킴
+        입력 : 최신버전의 메타정보리스트
+        역할 : 입력정보를 DB에 반영
         """
-        total_app_list = self.get_all_app_name_list()
 
-        for app in update_app_list:
-            app_name = app[0]
+        all_app_list = self.get_all_app_name_list()
+
+        for new_app in update_app_list:
+            new_app_name = new_app[0]
+            new_app_update_date = new_app[3]
 
             # 기존 DB에 존재하던 앱이라면 업데이트날짜를 비교해서 동일하면 그대로
             # 업데이트가 날짜가 다르다면(업데이트가 존재한다면) 업데이트 날짜 수정 및 isDownloaded 컬럼 수정
-            if app_name in total_app_list:
-                self.cursor.execute("select * from list where appName=(?)",(app_name,))
-                total_data = self.cursor.fetchall()[0]
+            self.cursor.execute("select * from list where appName=(?) LIMIT 1",\
+                (new_app.name,))
 
-                if total_data[3] == app[3]:
-                    continue
-                else:
-                    self.update_date(app)
-                    logging.info(app_name + ' is updated')
-            # 기존 DB에 업던 앱이라면 새로 DB에 추가시힘
-            else:
+            # 기존 DB에 없던 앱이라면 새로 DB에 추가시힘
+            if(cursor.rowcount == 0):
                 self.insert_app(app, category)
-                logging.info(app_name + ' is inserted')
+                logging.info(new_app_name + ' is inserted')
+                continue
 
-    def insert_app(self, insert_app, category):
+            # 기존 DB에 있는 앱이라면 업데이트 날짜 비교한뒤 날짜가 다르면 업데이트
+            old_date = cursor.fetchone()
+            old_update_date = old_data[3]
+
+            if old_update_date == app_update_date:
+                continue
+            else:
+                self.update_date(app)
+                logging.info(new_app_name + ' is updated')
+
+
+    def insert_app(self, new_app, category):
         """
             기존DB에 없던 앱을 추가할 때 호출됨.
         """
-        insert_app.append(category)
         try:
-            self.cursor.execute("INSERT INTO list VALUES (?,?,?,?,?,?)", insert_app)
-            print (str(datetime.datetime.now()) + " - new record " + insert_app[0] + "is inserted in DB.")
+            self.cursor.execute("INSERT INTO list VALUES (?,?,?,?,?,?)", new_app.to_list)
+            logging.info(str(datetime.datetime.now()) + \
+                " - new record " + new_app.name + "is inserted in DB.")
         except Exception as e:
             self.connection.close()
             raise e
