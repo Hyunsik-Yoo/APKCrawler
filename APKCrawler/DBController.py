@@ -135,3 +135,20 @@ class DBController:
 
         # 삽입 정보 저장
         self.connection.commit()
+
+    def not_updated_list(self):
+        try:
+            self.cursor.execute("select package from list where isDownloaded is False")
+            package_list = cursor.fetchall()
+        except Exception as e:
+            self.connection.close()
+            raise e
+        return package_liste
+
+    def update_isdonwload(self, package, isdownload):
+        if(isdownload):
+            self.cursor.execute("update list set idDownload=? where package==?",\
+                (True,package))
+        else:
+            self.cursor.execute("update list set isDownload=? where package==?",\
+                (False,package))
