@@ -1,6 +1,4 @@
-#!/usr/bin/python3
-
-#from Crawler import *
+from Crawler import *
 import sys
 import argparse
 
@@ -28,16 +26,17 @@ def main():
     if(args.method != None):
         method = args.method
 
-    playstore_crawler = Crawler(is_dektop = desktop)
+    playstore_crawler = Crawler(is_desktop = desktop)
 
     if(method == "crawl_new"):
         playstore_crawler.crawl_new()
     elif(method == "crawl_old"):
         playstore_crawler.crawl_old()
     elif(method == "update_apk"):
-        print(method)
+        playstore_crawler.update_apk()
 
-    print(desktop)
+    playstore_crawler.close()
+
 
 
 if __name__ == '__main__':
