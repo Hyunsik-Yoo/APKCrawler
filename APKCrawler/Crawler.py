@@ -15,7 +15,6 @@ import logging
 class Crawler:
 
     def __init__(self, is_desktop):
-
         config = configparser.ConfigParser()
         config.read('config.ini')
         self.apk_directory = config.get('Setting','APK_DIRECTORY')
@@ -184,7 +183,7 @@ class Crawler:
                 logging.info(package_name + ' is not searched in APKpure')
                 continue
 
-            print(link) # 디버깅용
+            print(link) # debug
             self.chrome.get(link)
             self.chrome.implicitly_wait(10)
 
