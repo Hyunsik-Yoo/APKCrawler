@@ -81,6 +81,9 @@ class Crawler:
                         get_attribute('src')
                 updated_date = self.chrome.\
                     find_elements_by_css_selector('.content')[0].text
+                ratings = self.chrome.find_elements_by_css_selector('.rating-count')[0].text
+                if ',' in ratings:
+                    ratings = ratings.replace(',','')
             except:
                 print(package + " 오류 발생")
                 print(package + " name, img_src, update_date 가져오기 실패")

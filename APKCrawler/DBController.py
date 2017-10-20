@@ -45,6 +45,7 @@ class DBController:
                     package,
                     imgSrc,
                     updateDate,
+                    ratings,
                     isDownloaded,
                     category
                 )""")
