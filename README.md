@@ -10,10 +10,13 @@ Play Store Crawler creates meta data DB.
 APK Downloader downloads APK files that exist in meta data DB.
 
 # Installation
-> Install python library
-> <pre><code> sudo pip3 install -r requirements.txt </code</pre>
-> Xvfb(If you want run with no GUI mode)
-> <pre><code> sudo apt-get install xvfb</code></pre>
+```bash
+sudo pip3 install -r requirements.txt
+```
+Xvfb(If you want run with no GUI mode)
+```bash 
+sudo apt-get install xvfb
+```
 
 # Usage
 ```bash
