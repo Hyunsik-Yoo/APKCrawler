@@ -20,10 +20,12 @@ sudo apt-get install xvfb
 
 # Usage
 ```bash
-    python3 main.py [-h] [--method METHOD] [--desktop DESKTOP]
+python3 main.py [-h] [--method METHOD] [--desktop DESKTOP]
 ```
 -h, --help : show help message and exit
+
 --method METHOD : function you want to run(crawl\_new, crawl\_old, update\_apk)
+
 --desktop DESKTOP : true(desktop mode), false(server mode, no GUI window)
 
 
