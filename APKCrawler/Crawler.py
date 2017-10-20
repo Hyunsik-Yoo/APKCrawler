@@ -215,7 +215,7 @@ class Crawler:
 
         self.db_connector.commit_n_close()
 
-    def close():
+    def close(self):
         self.chrome.stop()
         if(not self.is_desktop):
             self.display.stop()
