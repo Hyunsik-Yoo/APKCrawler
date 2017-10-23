@@ -45,6 +45,7 @@ class DBController:
                     package,
                     imgSrc,
                     updateDate,
+                    ratings,
                     isDownloaded,
                     category
                 )""")
@@ -113,7 +114,11 @@ class DBController:
 
         for new_app in update_app_list:
             new_app_name = new_app[0]
-            new_app_update_date = new_app[3]
+            package = new_app[1]
+            imgSrc = new_app[2]
+            updateDate = new_app[3]
+            ratings = new_app[4]
+            isDownloaded = new_app[5]
 
             # 기존 DB에 존재하던 앱이라면 업데이트날짜를 비교해서 
             # 동일하면 그대로
@@ -124,8 +129,9 @@ class DBController:
                 (new_app_name,))
 
             # 기존 DB에 없던 앱이라면 새로 DB에 추가시힘
-            if(cursor.rowcount == 0):
-                self.insert_app(new_app, category)
+            app_details = self.cursor.fetchone()[0]
+            if data == 0:
+                self.insert_app(new_app_name,package,imgSrc,updateDate,ratings,isDownloaded,category)
                 logging.info(new_app_name + ' is inserted')
                 continue
 
@@ -142,15 +148,15 @@ class DBController:
                 logging.info(new_app_name + ' is updated')
 
 
-    def insert_app(self, new_app, category):
+    def insert_app(self,new_app_name,package,imgSrc,updateDate,ratings,isDownloaded,category):
         """
             기존DB에 없던 앱을 추가할 때 호출됨.
         """
         try:
-            self.cursor.execute("INSERT INTO list VALUES (?,?,?,?,?,?)",\
-                new_app)
+            self.cursor.execute("INSERT INTO list VALUES (?,?,?,?,?,?,?)",\
+                (new_app_name,package,imgSrc,updateDate,ratings,isDownloaded,category))
             logging.info(str(datetime.datetime.now()) + \
-                " - new record " + new_app.name + "is inserted in DB.")
+                " - new record " + new_app_name + "is inserted in DB.")
         except Exception as e:
             self.connection.close()
             raise e
@@ -161,7 +167,7 @@ class DBController:
     def not_updated_list(self):
         try:
             self.cursor.execute(\
-                "select package from list where isDownloaded==?",('False',))
+                "select package from list where isDownloaded LIKE ?",('%0%',))
             package_list = self.cursor.fetchall()
         except Exception as e:
             self.connection.close()
