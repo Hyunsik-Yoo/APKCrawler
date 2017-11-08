@@ -20,7 +20,7 @@ sudo apt-get install xvfb
 
 # Dependancy
 This project depands on python selenium library. So you need to install chrome, selenium chrome webdriver.
-You can download selenium chrome webdriver in ![here](https://sites.google.com/a/chromium.org/chromedriver/downloads).
+You can download selenium chrome webdriver in [here](https://sites.google.com/a/chromium.org/chromedriver/downloads).
 
 # Usage
 ```bash
