@@ -18,6 +18,10 @@ Xvfb(If you want run with no GUI mode)
 sudo apt-get install xvfb
 ```
 
+# Dependancy
+This project depands on python selenium library. So you need to install chrome, selenium chrome webdriver.
+You can download selenium chrome webdriver in ![here](https://sites.google.com/a/chromium.org/chromedriver/downloads).
+
 # Usage
 ```bash
 python3 main.py [-h] [--method METHOD] [--desktop DESKTOP]
